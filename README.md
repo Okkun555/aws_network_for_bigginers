@@ -9,3 +9,10 @@ $ terraform plan
 ```
 $ terraform apply
 ```
+
+### フォーマット
+```
+$ terraform fmt 　// currentディレクトリのみ
+$ terraform fmt -recursive // サブディレクトリ内も整形
+
+```
