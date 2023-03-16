@@ -40,7 +40,7 @@ resource "aws_internet_gateway" "myig" {
 # --------------------------------------------------------------
 resource "aws_route_table" "inettable" {
   vpc_id = aws_vpc.myvpc01.id
-  
+
   tags = {
     Name = "inettable"
   }

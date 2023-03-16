@@ -25,6 +25,7 @@ resource "aws_instance" "mywebserver" {
   subnet_id                   = aws_subnet.mysubnet01.id
   associate_public_ip_address = true
   key_name                    = var.key_name
+  user_data                   = file("./files/user_data.sh")
 
   tags = {
     Name = "my-web-server"
