@@ -25,7 +25,14 @@ resource "aws_instance" "mywebserver" {
   subnet_id                   = aws_subnet.mysubnet01.id
   associate_public_ip_address = true
   key_name                    = var.key_name
-  user_data                   = file("./files/user_data.sh")
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum update -y",
+      "sudo yum install -y httpd",
+      "sudo systemctl start httpd",
+      "sudo systemctl enable httpd"
+    ]
+  }
 
   tags = {
     Name = "my-web-server"
