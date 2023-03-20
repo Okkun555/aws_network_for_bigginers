@@ -16,7 +16,7 @@ data "aws_ssm_parameter" "amzn2_ami" {
 }
 
 # --------------------------------------------------------------
-# EC2
+# webサーバ
 # --------------------------------------------------------------
 resource "aws_instance" "mywebserver" {
   ami                         = data.aws_ssm_parameter.amzn2_ami.value
@@ -25,6 +25,8 @@ resource "aws_instance" "mywebserver" {
   subnet_id                   = aws_subnet.mysubnet01.id
   associate_public_ip_address = true
   key_name                    = var.key_name
+
+  # FIXME: 自動でapachインストールできてなさそう
   provisioner "remote-exec" {
     inline = [
       "sudo yum update -y",
@@ -37,4 +39,16 @@ resource "aws_instance" "mywebserver" {
   tags = {
     Name = "my-web-server"
   }
+}
+
+# --------------------------------------------------------------
+# DBサーバ
+# --------------------------------------------------------------
+resource "aws_instance" "mydbserver" {
+  ami                    = data.aws_ssm_parameter.amzn2_ami.value
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_default_security_group.default.id]
+  subnet_id              = aws_subnet.privatesubnet.id
+  private_ip             = "10.0.1.10"
+  key_name               = var.key_name
 }

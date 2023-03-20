@@ -24,6 +24,17 @@ resource "aws_subnet" "mysubnet01" {
   }
 }
 
+resource "aws_subnet" "privatesubnet" {
+  vpc_id = aws_vpc.myvpc01.id
+
+  availability_zone = "ap-northeast-1a"
+  cidr_block        = "10.0.1.0/24"
+
+  tags = {
+    Name = "private-subnet"
+  }
+}
+
 # --------------------------------------------------------------
 # Internet Gateway
 # --------------------------------------------------------------
