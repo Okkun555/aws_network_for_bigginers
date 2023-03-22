@@ -21,7 +21,7 @@ data "aws_ssm_parameter" "amzn2_ami" {
 resource "aws_instance" "mywebserver" {
   ami                         = data.aws_ssm_parameter.amzn2_ami.value
   instance_type               = "t2.micro"
-  vpc_security_group_ids      = [aws_security_group.webserverSG.id]
+  vpc_security_group_ids      = [aws_security_group.webserverSG.id, aws_default_security_group.default.id]
   subnet_id                   = aws_subnet.mysubnet01.id
   associate_public_ip_address = true
   key_name                    = var.key_name
@@ -51,4 +51,8 @@ resource "aws_instance" "mydbserver" {
   subnet_id              = aws_subnet.privatesubnet.id
   private_ip             = "10.0.1.10"
   key_name               = var.key_name
+
+  tags = {
+    Name = "my-db-server"
+  }
 }
