@@ -47,6 +47,26 @@ resource "aws_internet_gateway" "myig" {
 }
 
 # --------------------------------------------------------------
+# NAR Gateway 都度削除する
+# --------------------------------------------------------------
+resource "aws_eip" "mynatgweip" {
+  vpc = true
+
+  tags = {
+    Name = "my-natgw-eip"
+  }
+}
+
+resource "aws_nat_gateway" "mynatgw" {
+  allocation_id = aws_eip.mynatgweip.id
+  subnet_id     = aws_subnet.mysubnet01.id
+
+  tags = {
+    Name = "my-natgw"
+  }
+}
+
+# --------------------------------------------------------------
 # Route Table
 # --------------------------------------------------------------
 resource "aws_route_table" "inettable" {
@@ -66,4 +86,24 @@ resource "aws_route" "inettable" {
 resource "aws_route_table_association" "mysubnet01_route" {
   subnet_id      = aws_subnet.mysubnet01.id
   route_table_id = aws_route_table.inettable.id
+}
+
+# NAT Gatewayを経由してインターネットに疎通する為のルートテーブル
+resource "aws_route_table" "nattable" {
+  vpc_id = aws_vpc.myvpc01.id
+
+  tags = {
+    Name = "nattable"
+  }
+}
+
+resource "aws_route" "nattable" {
+  route_table_id         = aws_route_table.nattable.id
+  nat_gateway_id         = aws_nat_gateway.mynatgw.id
+  destination_cidr_block = "0.0.0.0/0"
+}
+
+resource "aws_route_table_association" "privatesubnet_route" {
+  subnet_id      = aws_subnet.privatesubnet.id
+  route_table_id = aws_route_table.nattable.id
 }

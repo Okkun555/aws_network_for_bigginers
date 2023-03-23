@@ -52,6 +52,12 @@ resource "aws_instance" "mydbserver" {
   private_ip             = "10.0.1.10"
   key_name               = var.key_name
 
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum install -y mariadb-server",
+    ]
+  }
+
   tags = {
     Name = "my-db-server"
   }
