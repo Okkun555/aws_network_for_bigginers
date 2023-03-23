@@ -26,7 +26,6 @@ resource "aws_instance" "mywebserver" {
   associate_public_ip_address = true
   key_name                    = var.key_name
 
-  # FIXME: 自動でapachインストールできてなさそう
   provisioner "remote-exec" {
     inline = [
       "sudo yum update -y",
@@ -55,6 +54,7 @@ resource "aws_instance" "mydbserver" {
   provisioner "remote-exec" {
     inline = [
       "sudo yum install -y mariadb-server",
+      "sudo systemctl start mariadb",
     ]
   }
 
