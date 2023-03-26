@@ -16,13 +16,35 @@ data "aws_ssm_parameter" "amzn2_ami" {
 }
 
 # --------------------------------------------------------------
-# webサーバ
+# webサーバのamiを作成
 # --------------------------------------------------------------
-resource "aws_instance" "mywebserver" {
+resource "aws_instance" "mywebserver01" {
   ami                         = data.aws_ssm_parameter.amzn2_ami.value
   instance_type               = "t2.micro"
   vpc_security_group_ids      = [aws_security_group.webserverSG.id, aws_default_security_group.default.id]
   subnet_id                   = aws_subnet.mysubnet01.id
+  associate_public_ip_address = true
+  key_name                    = var.key_name
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum update -y",
+      "sudo yum install -y httpd",
+      "sudo systemctl start httpd",
+      "sudo systemctl enable httpd"
+    ]
+  }
+
+  tags = {
+    Name = "my-web-server"
+  }
+}
+
+resource "aws_instance" "mywebserver02" {
+  ami                         = data.aws_ssm_parameter.amzn2_ami.value
+  instance_type               = "t2.micro"
+  vpc_security_group_ids      = [aws_security_group.webserverSG.id, aws_default_security_group.default.id]
+  subnet_id                   = aws_subnet.mysubnet02.id
   associate_public_ip_address = true
   key_name                    = var.key_name
 

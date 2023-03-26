@@ -24,6 +24,14 @@ resource "aws_subnet" "mysubnet01" {
   }
 }
 
+resource "aws_subnet" "mysubnet02" {
+  vpc_id = aws_vpc.myvpc01.id
+
+  availability_zone       = "ap-northeast-1c"
+  cidr_block              = "10.0.10.0/24"
+  map_public_ip_on_launch = false
+}
+
 resource "aws_subnet" "privatesubnet" {
   vpc_id = aws_vpc.myvpc01.id
 
@@ -85,6 +93,11 @@ resource "aws_route" "inettable" {
 
 resource "aws_route_table_association" "mysubnet01_route" {
   subnet_id      = aws_subnet.mysubnet01.id
+  route_table_id = aws_route_table.inettable.id
+}
+
+resource "aws_route_table_association" "mysubnet02_route" {
+  subnet_id      = aws_subnet.mysubnet02.id
   route_table_id = aws_route_table.inettable.id
 }
 
