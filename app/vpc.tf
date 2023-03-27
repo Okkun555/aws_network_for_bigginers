@@ -30,6 +30,10 @@ resource "aws_subnet" "mysubnet02" {
   availability_zone       = "ap-northeast-1c"
   cidr_block              = "10.0.10.0/24"
   map_public_ip_on_launch = false
+
+  tags = {
+    Name = "my-subnet-02"
+  }
 }
 
 resource "aws_subnet" "privatesubnet" {
